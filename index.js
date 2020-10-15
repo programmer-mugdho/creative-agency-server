@@ -36,12 +36,20 @@ client.connect(err => {
             img: Buffer.from(encImg, 'base64')
         }
         const { name, detail, email, work, price, status } = req.body
-        orderCollection.insertOne({ name, detail, email,status, work, price, image })
+        orderCollection.insertOne({ name, detail, email, status, work, price, image })
             .then(result => {
                 return res.send(result.insertedCount > 0)
             })
     })
 
+    app.get('/allAdmins/:email', (req, res) => {
+        const email = req.params.email
+        adminCollection.find({})
+            .toArray((err, documents) => {
+                const isAdmin = documents.find(admin => admin.email === email)
+                res.send(isAdmin == undefined ? false : true)
+            })
+    })
 
     app.post('/addService', (req, res) => {
         const file = req.files.file
