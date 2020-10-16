@@ -25,8 +25,6 @@ client.connect(err => {
     const orderCollection = client.db(DB_NAME).collection("orders");
     const reviewCollection = client.db(DB_NAME).collection("feedbacks");
 
-    console.log('Connected')
-
     app.post('/addOrder', (req, res) => {
         const file = req.files.file
         const encImg = file.data.toString('base64')
@@ -104,20 +102,17 @@ client.connect(err => {
     })
 
     app.patch('/updateOrder', (req, res) => {
-        console.log(req.body)
         orderCollection.updateOne({ _id: ObjectId(req.body.id) },
             {
                 $set: { status: req.body.status }
             })
             .then(result => {
-                console.log(result)
                 res.send(result)
             })
     })
 
     app.post('/addReview', (req, res) => {
         const data = req.body
-        console.log(data)
         reviewCollection.insertOne(data)
             .then(result => {
                 return res.send(result.insertedCount > 0)
